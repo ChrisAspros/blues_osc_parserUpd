@@ -1,0 +1,631 @@
+//future: den arkei to "ligotero apo 4 metra" gt mporei na kanei kyklous konta sto goal 
+//kai ksafnika na paei sto goal (k h mousikh 8a 8elei 4 metra..)
+
+//get at what time I expect ending? How precise that is?
+
+//write up results
+//send N
+//see N draft
+//write up discussion
+//send N
+//edit methodology
+//send N
+
+//ALLOW DYNAMIC ASSIGNMENT OF LENGTH OF RECONCILING PERIOD.. (more smooth, worse for form recovery!!!!)
+
+//blues-chords grammar ()
+
+// in CONSTRUCTOR ??
+
+time_signature 4 //in /4 .. (for now..)
+
+form_length 12
+//form_length 4
+harmonic_rhythm 1 //each non-t production applies to 1 bar (e.g. I1 : 1, I2 : 2), i.e. seq_t[3]==1, seq_t[3]==2 etc.
+
+//=====namespace (in a way) stored in "vs", "dec_bars"
+//spaces are significant
+decision_bars { 1 5 7 9 11 } //for now
+cadence_bars { 3 7 11 } //no need for 11 as it is the form's' end, but just to make it more 'cadency' (see cad_11)
+optimal_form { I IV I I IV IV I I V IV I I }
+rootpitch { I IV V }
+type { i i6 i7 iv iv6 iv7 v7 }
+inversion { _root _1st _2nd }
+position { _c _o }
+//terminals { i_root_open i6_root_open i7_root_open iv_root_open iv6_root_open iv7_root_open v7_root_open i6_root_closed }
+terminals { i i6 i7 iim7 iiim iiim7 iv iv6 iv7 v7 }
+
+//S -1.0> I1_head, IV5_head, I7_head, I9_head, I11_head
+
+start S
+//non-t 
+//decision_heads dec_* //apply to decision_bars elem
+
+//I(0+1)_head
+//non-t
+
+//root:(defined by "dec_*") type: ("_*") inv: pos:
+
+
+TIMED RULES: //left_str.size() ===(MUST EQUAL) right_side[x].rigth_str.size() ???
+
+//when writing a (timed?) rule for e.g. I_1, all other I_1 rules should have same context size
+//general rules are timely exposed to be tested without centre-element (of left_str)
+//so at any point, all of general_rules[x].left_str has to be tested by expanging the current element (chord) back n forth based on left_str.size()
+
+//context { 0 0 }//no context-awarenes here (for now..)
+//12th iteration in main()
+
+
+DOCUMENTATION
+//right_str.size() must be >= left_str.size()
+
+//FIXED:
+//ORDER OF APPEARANCE:
+//	same-timed rules with context must come first, otherwise non-cont rule of that time applies
+//parser must find a rule in order to rewrite (and update_*) so productions straight to terminal CAREFULLY
+//	e.g. only cad or fin at some point..
+//	so if I need an under-circumstances update_* at every bar, no more right_str.size() with temrinals than left_str.size()
+//	i.e. cad -> i v is a problem, because at position of v it wont check for large-scale decisions (and that might be critical)
+//			:FIXED
+
+
+   ===========
+|| TIMED RULES || //normally they should only look ahead only for higher-level context such as IV in bar 5 (improvisor's mind..), not for specific chord shape/form etc
+   ===========
+
+==============(DEC 1)===============
+(1)==============================
+
+-----(DEC 1)
+
+//for each chord, one tag based on decisio_bar+harmonic_rh
+//each new line should start with "->"
+›
+
+rule: dec_1 -> 0.2 I I I I 
+	  		-> 0.1 I I V I 
+	  		-> 0.25 I IV I I
+	  		-> 0.06 I IV V I
+	  		-> 0.08 I IV I V
+	  		-> 0.1 I I I V
+	  		-> 0.1 I V I I
+	  		-> 0.06 I V I V
+	  		-> 0.05 I V IV I
+	  		:end_rule
+
+-----(I)
+
+rule: v7 I_1 I -> 0.3 v7 i I
+			   -> 0.3 v7 i6 I
+			   -> 0.4 v7 i7 I
+			   :end_rule
+
+rule: v7 I_1 IV -> 1.0 v7 i7 IV :end_rule
+
+rule: v7 I_1 V -> 0.4 v7 i V
+			   -> 0.2 v7 i6 V
+			   -> 0.4 v7 i7 V
+			   :end_rule
+
+rule: i I_1 I|V -> 0.2 i i I|V // I|V not replaced in curr_cycle
+			 	-> 0.4 i i6 I|V
+			 	-> 0.4 i i7 I|V
+			 	:end_rule
+
+rule: i6 I_1 I|V -> 0.4 i6 i I|V
+			  	-> 0.2 i6 i6 I|V
+			  	-> 0.4 i6 i7 I|V
+			  	:end_rule
+
+rule: i7 I_1 I|V -> 0.4 i7 i I|V
+			  	-> 0.45 i7 i6 I|V
+			  	-> 0.15 i7 i7 I|V
+			  	:end_rule
+
+
+(2)==============================
+
+-----(I)
+
+rule: i I_2 -> 0.2 i i
+	  		-> 0.45 i i6
+	  		-> 0.35 i i7
+	  		:end_rule
+
+rule: i6 I_2 -> 1.0 i6 i7 :end_rule
+
+rule: i7 I_2 -> 0.35 i7 i6
+	   		-> 0.65 i7 i7
+	   		:end_rule
+
+-----(IV)
+
+rule: IV_2 I -> 1.0 iv7 I :end_rule
+
+rule: IV_2 V -> 0.65 iv I
+	   		-> 0.35 iv6 I
+	   		:end_rule
+
+rule: i|i6 IV_2 -> 0.25 i|i6 iv
+	   			-> 0.1 i|i6 iv6
+	   			-> 0.65 i|i6 iv7
+	   			:end_rule
+
+rule: i7 IV_2 -> 0.3 i7 iv6
+			  -> 0.7 i7 iv7
+			  :end_rule
+
+rule: IV_2 -> 0.7 iv7 //probably unnecessary
+		   -> 0.3 iv6
+		   :end_rule
+
+
+(3)==============================
+
+-----(I)
+
+rule: i I_3 -> 0.4 i i6
+	  		-> 0.6 i i7
+	  		:end_rule
+
+rule: i6 I_3 -> 0.3 i6 i
+			 -> 0.2 i6 i6 
+			 -> 0.5 i6 i7 
+			 :end_rule
+
+rule: i7 I_3 -> 0.3 i7 i
+			 -> 0.5 i7 i6 
+			 -> 0.2 i7 i7 
+			 :end_rule
+
+rule: iv|iv6|iv7 I_3 -> 0.3 iv|iv6|iv7 i //extend parser to accept IV as preceding instead of "iv|iv6|iv7" ..
+					 -> 0.7 iv|iv6|iv7 i7 //<-------------------------
+					 :end_rule
+
+rule: v7 I_3 -> 0.3 v7 i
+			 -> 0.15 v7 i6
+			 -> 0.55 v7 i7
+			 :end_rule
+
+-----(IV)
+
+rule: v7 IV_3 I -> 1.0 v7 iv7 I
+				:end_rule
+
+
+(4)==============================
+
+-----(I)
+
+rule: I_4 -> 0.15 i
+		  -> 0.85 i7
+		  :end_rule
+
+
+
+==============(DEC 5)===============
+(5)==============================
+
+-----(DEC 5)
+
+rule: dec_5 -> 1.0 IV IV :end_rule
+
+-----(IV)
+
+rule: IV_5 -> 0.1 iv
+		   -> 0.2 iv6
+		   -> 0.7 iv7
+		   :end_rule
+
+
+(6)==============================
+
+-----(IV)
+
+rule: iv IV_6 -> 0.1 iv iv
+			  -> 0.2 iv iv6
+			  -> 0.7 iv iv7
+			  :end_rule
+
+rule: iv6 IV_6 -> 0.3 iv6 iv
+			   -> 0.2 iv6 iv6
+			   -> 0.5 iv6 iv7
+			   :end_rule
+
+rule: iv7 IV_6 -> 0.3 iv7 iv
+			   -> 0.5 iv7 iv6
+			   -> 0.2 iv7 iv7
+			   :end_rule
+
+rule: IV_6 -> 1.0 iv7 :end_rule
+
+
+==============(DEC 7)===============
+(7)==============================
+
+-----(DEC 7)
+
+rule: dec_7 -> 0.7 I I
+			-> 0.2 III I 
+			-> 0.1 III III 
+			:end_rule
+
+-----(I)
+
+rule: I_7 -> 0.25 i
+		  -> 0.75 i7
+		  :end_rule
+
+-----(III)
+
+rule: iv III_7 -> 0.3 iv iiim
+			   -> 0.7 iv iiim7
+			   :end_rule
+
+rule: iv6 III_7 -> 0.15 iv6 iiim
+				-> 0.85 iv6 iiim7
+				:end_rule
+
+rule: iv7 III_7 -> 0.15 iv7 iiim
+				-> 0.85 iv7 iiim7
+				:end_rule
+
+
+(8)==============================
+
+-----(I)
+
+rule: iiim|iiim7 I_8 -> 0.2 iiim|iiim7 i //<-------------------------
+					 -> 0.8 iiim|iiim7 i6
+					 :end_rule
+
+rule: i I_8 -> 0.3 i i
+			-> 0.6 i i6
+			-> 0.1 i i7
+			:end_rule
+
+rule: i7 I_8 -> 0.25 i7 i
+			 -> 0.4 i7 i6
+			 -> 0.35 i7 i7
+			 :end_rule
+
+-----(III)
+
+rule: iiim III_8 -> 0.35 iiim iiim
+				 -> 0.65 iiim iiim7
+				 :end_rule
+
+rule: iiim7 III_8 -> 0.65 iiim7 iiim
+				  -> 0.35 iiim7 iiim7
+				  :end_rule
+
+
+==============(DEC 9)===============
+(9)==============================
+
+-----(DEC 9)
+
+rule: dec_9 -> 0.1 I I
+			-> 0.15 V V
+			-> 0.75 V IV
+			:end_rule
+
+-----(I)
+
+rule: iiim|iiim7 I_9 -> 0.2 iiim|iiim7 i //<-------------------------
+					 -> 0.8 iiim|iiim7 i6
+					 :end_rule
+
+rule: i I_9 -> 0.15 i i
+			-> 0.35 i i6
+			-> 0.5 i i7
+			:end_rule
+
+rule: i6 I_9 -> 0.12 i6 i
+			 -> 0.08 i6 i6
+			 -> 0.80 i6 i7
+			 :end_rule
+
+rule: i7 I_9 -> 1.0 i7 i7 :end_rule
+
+-----(IV)
+
+rule: IV_9 -> 0.3 iv
+		   -> 0.7 iv6
+		   :end_rule
+
+// V_9 -> 1.0 v7 ..
+
+
+(10)==============================
+
+-----(I)
+
+rule: i I_10 -> 0.15 i i
+			 -> 0.35 i i6
+			 -> 0.5 i i7
+			 :end_rule
+
+rule: i6 I_10 -> 0.15 i6 i
+			  -> 0.25 i6 i6
+			  -> 0.6 i6 i7
+			  :end_rule
+
+rule: i7 I_10 -> 0.15 i7 i
+			  -> 0.35 i7 i6
+			  -> 0.5 i7 i7
+			  :end_rule
+
+// V_10 -> 1.0 v7
+
+-----(IV)
+
+rule: IV_10 -> 0.9 iv7
+		    -> 0.1 iv6
+		    :end_rule
+
+
+==============(DEC 11)===============
+(11)==============================
+
+-----(DEC 11)
+
+rule: iv|iv6|iv7|v7 dec_11 -> 0.2 iv|iv6|iv7|v7 I I //<------//if prev optional!?
+						   -> 0.8 iv|iv6|iv7|v7 I V //works with non-optional prev but unequal sides
+						   :end_rule					//doesn't' work with optional prev and equal sides
+
+rule: i|i6|i7 dec_11 -> 0.05 i|i6|i7 V I
+					 -> 0.7 i|i6|i7 I V
+					 -> 0.05 i|i6|i7 V V
+					 -> 0.2 i|i6|i7 I I
+					 :end_rule
+
+-----(I)
+
+rule: iv|iv6|iv7 I_11 -> 0.15 iv|iv6|iv7 i
+					  -> 0.85 iv|iv6|iv7 i7
+					  :end_rule
+
+rule: v7 I_11 -> 0.1 v7 i
+			  -> 0.1 v7 i6
+			  -> 0.8 v7 i7
+			  :end_rule
+
+rule: i I_11 -> 0.1 i i
+			 -> 0.5 i i6
+			 -> 0.4 i i7
+			 :end_rule
+
+rule: i6 I_11 -> 0.3 i6 i
+			  -> 0.7 i6 i7
+			  :end_rule
+
+rule: i7 I_11 -> 0.15 i7 i
+			  -> 0.45 i7 i6
+			  -> 0.4 i7 i7
+			  :end_rule
+
+// V_11 -> 1.0 v7
+
+
+(11)==============================
+
+-----(I)
+
+rule: v7 I_12 -> 0.8 v7 i6
+			  -> 0.2 v7 i7
+			  :end_rule
+
+rule: i I_12 -> 0.1 i i
+			 -> 0.2 i i6
+			 -> 0.7 i i7
+			 :end_rule
+
+rule: i6 I_12 -> 0.2 i6 i
+			  -> 0.1 i6 i6
+			  -> 0.7 i6 i7
+			  :end_rule
+
+rule: i7 I_12 -> 0.3 i7 i
+			  -> 0.35 i7 i6
+			  -> 0.35 i7 i7
+			  :end_rule
+
+// V_12 -> 1.0 v7
+
+
+
+
+
+
+
+   =============
+|| GENERAL RULES || //also context-sensitive and optional (right_str stacking up to the leftmost of left_str - just like in timed_rules)
+   =============
+
+==============(GENERAL)==============
+
+rule: I -> 0.1 i //THIS RULE is (mainly) for the 1st-cycle I_1 for form_length = 4 (to avoid non-t as preceding context)
+		-> 0.4 i6
+		-> 0.5 i7
+		:end_rule
+
+rule: IV -> 1.0 iv7 :end_rule
+
+rule: V -> 1.0 v7 :end_rule
+
+
+
+
+
+
+
+
+     =============
+     =============
+|||| CADENCE RULES |||| U general_rules
+     =============
+     =============
+
+//will need to add a few general rules in case cadence context doesn't' match in recovery?
+
+
+(cadence rules: to occur in beat 3 / 7 / 11)===============================================================
+
+rule: iiim|iiim7|iv|iv6|iv7 cad -> 1.0 iiim|iiim7|iv|iv6|iv7 iim7 v7 :end_rule
+
+//rule: cad -> 0.1 iv v7 //else? does it need prev context too, or does it work like an 'else'?
+		  -> 0.6 iv6 v7
+		  -> 0.3 iv7 v7
+		  :end_rule
+
+rule: cad -> 0.1 iv V //else? does it need prev context too, or does it work like an 'else'?
+		  -> 0.6 iv6 V
+		  -> 0.3 iv7 V
+		  :end_rule
+
+rule: cad_11 -> 1.0 I V :end_rule
+
+(final rules: every bar after cadence -if not recovering-)=================================================
+
+rule: v7 fin -> 1.0 v7 I :end_rule 
+
+//could not give two terminals - rule/update jumped a bar ahead
+			 //-> 0.55 v7 i6
+			 //-> 0.15 v7 i7
+			 //:end_rule
+
+rule: i|i6|i7 fin -> 1.0 i|i6|i7 v7 :end_rule
+
+rule: fin_1 -> 0.15 i
+			-> 0.5 i6
+			-> 0.35 i7
+			:end_rule
+
+rule: fin_11 -> 1.0 I V :end_rule //so that v7 (i.e. terminal) is avoided, and fin is updated for next cycles
+
+rule: fin_12 -> 1.0 V :end_rule
+
+(reconciling rules: one before back in form)===============================================================
+
+rule: rec_1 -> 1.0 I :end_rule
+
+rule: rec_2 -> 1.0 IV :end_rule //add general?
+
+rule: rec_3 -> 1.0 I :end_rule
+
+rule: iim7 rec_4 -> 0.8 iim7 V 
+				 -> 0.2 iim7 I
+				 :end_rule
+
+rule: iv|iv6|iv7 rec_4 -> 0.2 iv|iv6|iv7 V 
+					   -> 0.8 iv|iv6|iv7 I
+					   :end_rule
+
+rule: i|i6|i7 rec_4 -> 0.1 i|i6|i7 V 
+					-> 0.9 i|i6|i7 I
+					:end_rule
+
+rule: rec_4 -> 0.85 I //<---------------------- for recovery without reaching cad
+			-> 0.15 V
+			:end_rule
+
+rule: rec_5 -> 1.0 IV :end_rule //maybe these aren't' necessary since same as form, but good for future forms
+
+rule: rec_6 -> 1.0 IV :end_rule
+
+rule: rec_7 -> 1.0 I :end_rule
+
+rule: iim7 rec_8 -> 0.3 iim7 V //if cad reached
+				 -> 0.7 iim7 I
+				 :end_rule
+
+rule: rec_8 -> 1.0 I :end_rule //if cad NOT reached
+
+rule: v7 rec_9 -> 1.0 v7 IV :end_rule //if cad reached
+
+rule: rec_9 -> 1.0 V :end_rule //if cad NOT reached (goes here if timed_rule with specific context not found?)
+
+rule: i|i6|i7 rec_10 -> 0.8 i|i6|i7 V //if cad reached
+					 -> 0.2 i|i6|i7 IV 
+					 :end_rule
+
+rule: rec_10 -> 1.0 IV :end_rule //if cad NOT reached (i.e. NOT from 'fin')
+
+rule: rec_11 -> 1.0 I :end_rule
+
+rule: rec_12 -> 0.6 I
+			 -> 0.4 V 
+			 :end_rule
+
+
+(finalise_cycle())=======================================================================================
+
+//rule: i6 finalise -> 1.0 i6 i7 :end_rule
+
+//rule: i7 finalise -> 1.0 i7 i6 :end_rule
+
+//rule: finalise -> 1.0 i6 :end_rule
+
+
+=========================================================================================================
+=========================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+//if element timed & context defined by "_*" in each rule. If no "_*" then GENERAL RULE
+
+//context { 1 0 } //context-awareness: 1 to the left
+
+//rule: i i6_1 I -> 1.0 last_i i6_root_closed I :end_rule //and position depends on contextial positions // <----------------------
+
+GENERAL RULES: //for now only WITHOUT CONTEXT
+//otherwise rewrite -> for -> else -> t_aux[1] has to see where to place it in curr_cycle
+(3-4)
+
+//rule: V -> 1.0 v7 :end_rule
+//rule: I -> 1.0 i :end_rule
+//rule: IV -> 1.0 iv6 :end_rule
+
+(inv - pos)
+//rule: i -> 1.0 i_root_open :end_rule //i root closed pos 
+//rule: i6 -> 1.0 i6_root_open :end_rule 
+//rule: i7 -> 1.0 i7_root_open :end_rule 
+//rule: iv -> 1.0 iv_root_open :end_rule
+//rule: iv6 -> 1.0 iv6_root_open :end_rule
+//rule: iv7 -> 1.0 iv7_root_open :end_rule
+//rule: v7 -> 1.0 v7_root_open :end_rule
+//make context-sensitive & some position-sensitive
+//rule:  i6 -> 0.4 i6_root //i6_root_open etc..
+//rule: i6 -> 0.3 i6_1st :end_rule
+//rule: i6 -> 0.3 i6_2nd :end_rule
+
+
+//non-t_2
+non-t_2 I1, I2, I3, I4, IV2, IV3, V2, V3, V4, V12
+
+non-t_3 i1, i1_6, i1_7, i2, i2_6, i2_7
+t i, i6, i7, 		//i_1st, i6_1st, i7_1st, i_2nd, i6_2nd, i7_2nd
+t iv, iv6, iv7, 	//iv_1st, iv6_1st, iv7_1st, iv_2nd, iv6_2nd, iv7_2nd
+t v7, 				//v7_1st, v7_2nd
+
+
+inversions
+===
+//embed in grammar: if previous 4th or 5th and same inversion, then oposite position (open->closed || closed->open)
+
+ERRORS
+===
+//do not end with comments (for now..)
+.-
