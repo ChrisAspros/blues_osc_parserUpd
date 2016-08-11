@@ -20,6 +20,16 @@ void ofApp::setup(){
     //ofSleepMillis(1000);
     
     //cout << "set up" << endl << endl << endl;
+    
+    openSans.load("/Users/christodoulosaspromallis/Desktop/UCL/PhD Year 2/Development/OF/of_v0.9.1_osx_release/apps/midiWorkspace/blues_osc_parserUpd/bin/data/open-sans/OpenSans-Regular.ttf", 19.5);
+    
+    //arrow shape
+    arrow.addVertex(0, 0);
+    arrow.addVertex(0, 23);
+    arrow.addVertex(-8, 15);
+    arrow.addVertex(0, 23);
+    arrow.addVertex(8, 15);
+    arrow.addVertex(0, 23);
 }
 
 
@@ -56,21 +66,134 @@ void ofApp::update(){
      sleep for period - elapsed
      ---
      */
+    
+    //failed try to not alter the lib files..
+    /*
+    GLFWwindow* = w_p;
+    glfwSetWindowCloseCallback(w_p, stop_all_midi_2());
+    
+    //glfwCreateWindow
+     */
 }
 
+/*
+ stop translations after we 've reached
+ make empty if previous dec (1, 5, 7, 9, 11)
+ make last chord (if v7 and previous == "fin" be also "fin"
+ make vid
+ debug engine
+ make pp
+ discuss
+ */
 
 void ofApp::draw(){
 
     //ofColor(0);
     ofBackground(0);
-    ofDrawBitmapString("ending: " + ofToString(blues.ending) + "\n" + "goal_reached: " + ofToString(blues.goal_reached), 10, 10);
+    
+    
+    //PREDICTION ENGINE STATE FRAME
+    ofSetColor(255);
+    openSans.drawString("PREDICTION ENGINE STATE:", ofGetWidth()/2 - 157, 30);
+    ofSetColor(110);
+    ofSetLineWidth(2.5);
+    ofNoFill();
+    ofDrawRectangle(140, 60, 300, 170);
+    
+    string p_e_input; //input from prediction engine
+    
+    if (show_p_e_input){
+    
+        if (blues.ending) {
+        
+            ofSetColor(0, 255, 0);
+            openSans.drawString("ENDING", 215, 110);
+        }
+        else {
+            
+            ofSetColor(255, 0, 0);
+            openSans.drawString("RECOVERING", 215, 110);
+        }
+        if (blues.goal_reached) {
+            
+            ofSetColor(30, 144, 255);
+            openSans.drawString("\n\nGOAL_REACHED", 215, 110);
+        }
+    
+    }
+    
+     openSans.drawString(p_e_input, 215, 110);
+    
+    
+    //CYCLE STATE FRAME
+    ofSetColor(255);
+    openSans.drawString("CYCLE STATE:", ofGetWidth()/2 - 80, 360);
+    ofSetColor(110);
+    ofSetLineWidth(2.5);
+    ofNoFill();
+    ofDrawRectangle(4, 385, 567, 300);
+    
+    
+    //DRAW CYCLE STATES
+    string chord_str;
+    
+    for (int i=0; i<12; i++){
+     
+        chord_str = blues.parser.curr_cycle[i].name;
+        
+        //coloured special non-terminals
+        if (chord_str=="cad") ofSetColor(0, 255, 0);
+        else if (chord_str=="rec") ofSetColor(255, 0, 0);
+        else if (chord_str=="fin") ofSetColor(30, 144, 255);
+        else ofSetColor(255);
+        
+        for (int j=0; j<i/4; j++) chord_str = "\n\n\n" + chord_str;
+        openSans.drawString(chord_str, ((i%4)+1)*135-95, 453);
+    }
+    
+    
+    //DRAW BARLINES
+    ofSetColor(102, 102, 0);
+    string barline;
+    
+    for (int i=0; i<15; i++){
+        
+        barline = "|";
+        
+        if (i==0 || i==14) barline = "||";
+        
+        for (int j=0; j<i/5; j++) barline = "\n\n\n" + barline;
+        openSans.drawString (barline, ((i%5)+1)*135-130, 450);
+    }
+    
+    
+    //ARROW
+    ofSetColor(255, 222, 0);
+    ofSetLineWidth(2.5);
+    
+    //openSans.drawString(ofToString(blues.t[3]), 50, 50);
+    
+    ofPushMatrix();
+    ofTranslate(51, 390);
+    
+    for (int j=0; j<blues.t[3]/4; j++) ofTranslate(0, 105);
+    ofTranslate(((blues.t[3]%4))*133, 0);
+    
+    arrow.draw();
+    ofPopMatrix();
 }
 
 void ofApp::keyPressed(int key){
 
-    if (key == 'e') blues.ending = 1;
-    if (key == 'r') blues.ending = 0;
-    if (key == 'g') blues.goal_reached = 1;
+    if (key == 'e' || key == 'E') blues.ending = 1; show_p_e_input = 1;
+    if (key == 'r' || key == 'R') blues.ending = 0;
+    if (key == 'g' || key == 'G') blues.goal_reached = 1;
+    if (key == 's' || key == 'S') blues.seq.stop_all_MIDI();
 }
 
 void ofApp::keyReleased(int key){}
+
+void ofApp::stop_all_midi_2(){
+    
+    cout << "stopping midi..!!" << endl;
+}

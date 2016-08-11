@@ -19,6 +19,11 @@ public:
     void keyReleased(int key);
     
     int channel, note, velocity;
+    
+    void stop_all_midi_2();
+    
+    //static void glfwSetWindowCloseCallback(int * OF_W, void stop_all_midi_2());
+    bool show_p_e_input; //to trigger showing ENDING/RECOVERING (onee the first event arrives..)
 
 private:
     //Sequencer seq;
@@ -28,6 +33,8 @@ private:
     
     //bool ending, goal_reached;
     
+    ofTrueTypeFont openSans; //font is free for commercial use, downloaded from: https://www.fontsquirrel.com/fonts/list/popular
+    ofPolyline arrow;
 };
 
 /*
