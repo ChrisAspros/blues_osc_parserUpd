@@ -24,6 +24,7 @@ public:
     
     //static void glfwSetWindowCloseCallback(int * OF_W, void stop_all_midi_2());
     bool show_p_e_input; //to trigger showing ENDING/RECOVERING (onee the first event arrives..)
+    bool show_recovery;
 
 private:
     //Sequencer seq;

@@ -554,6 +554,8 @@ void G_parser::update_ending(vector<int>& seq_t){
     
     check_cadence(seq_t);
     
+    cout << "at bar: " << seq_t[3] << " cadenced: " << cadenced << " t/non-t: " << curr_cycle[seq_t[3]].name << endl;
+    
     if (!goal_reached){
         
         if (ending){
@@ -569,17 +571,27 @@ void G_parser::update_ending(vector<int>& seq_t){
         else if (cad_updated) recover(seq_t);//cad_updated??
     }
     else {
-        //when goal reached, no turning back..
+        //goal_reached is irreversible
         
-        int end_bar = (cad_pos + 2) % form_length;
+        //int end_bar = (cad_pos + 2) % form_length;//it's a mistake to get this from cad_pos. cad_pos becomes -1 if cadenced..
         string c_c = curr_cycle[seq_t[3]].name;
         
         if (!cad_updated) update_cad(seq_t);
         update_finals(seq_t);
         //fin_updated;
         
-        if (end_bar <= seq_t[3] && (c_c == "i" || c_c == "i6" || c_c == "i7")) stop_sequencer();
-        //spit out last I term chord
+        //watch out: g_r might come too early
+        //==0 doesn't happen
+        //if (cad_pos==10 && cadenced) stop_sequencer();
+        
+        if ((c_c == "i" || c_c == "i6" || c_c == "i7") && cadenced) stop_sequencer();//(seq_t[3]==0 || seq_t[3]==4 || seq_t[3]==8) && seq_t[3]>=cad_pos
+        
+        /*
+        if (end_bar!=0){
+            if (end_bar <= seq_t[3] && (c_c == "i" || c_c == "i6" || c_c == "i7")) stop_sequencer();
+        }
+        else if ((c_c == "i" || c_c == "i6" || c_c == "i7") && seq_t[3]) stop_sequencer();
+        */
     }
 }
 
@@ -619,7 +631,7 @@ void G_parser::update_cad(vector<int>& seq_t){
 
 void G_parser::recover(vector<int>& seq_t){
     
-    cout << "recover" << endl;
+    //cout << "recover" << endl;
     
     fin_updated = false;
     cad_updated = false;
@@ -632,7 +644,7 @@ void G_parser::recover(vector<int>& seq_t){
 
 void G_parser::update_optimal(vector<int>& seq_t){
     
-    cout << "update_optimal" << endl;
+    //cout << "update_optimal" << endl;
     
     //if end of form
     int optimal_pos = (seq_t[3] + 2) % form_length;
@@ -644,7 +656,7 @@ void G_parser::update_optimal(vector<int>& seq_t){
 
 void G_parser::reconcile(vector<int>& seq_t){
     
-    cout << "reconcile" << endl;
+    //cout << "reconcile" << endl;
     
     int rec_pos = (seq_t[3] + 1) % form_length;
     curr_cycle[rec_pos].name = "rec";
@@ -653,22 +665,34 @@ void G_parser::reconcile(vector<int>& seq_t){
 
 void G_parser::update_finals(vector<int>& seq_t){
     
-    cout << "update_finals" << endl;
+    //cout << "update_finals" << endl;
     
     //fin meta to cad mexri prin apo kei pou eimai
     
-    if (!goal_reached && seq_t[3]==11 && cadenced) {
-        cout << "finals_1" << endl;
+    /*
+    if (ending || goal_reached){
+    
+        //de vlepei kanona gia to cad..!!
+        //CAD_POS?????????
+        for(int i=cad_pos+2; i<form_length; i++) curr_cycle[i].name = "fin";
+        for(int i=0; i<seq_t[3]-1; i++) curr_cycle[i].name = "fin";
+    }
+     //*/
+    
+    ///*===============
+    if (seq_t[3]==11 && cadenced) {//if (!goal_reached && seq_t[3]==11 && cadenced)
+        //cout << "finals_1" << endl;
         for (int i=cad_pos+1; i<curr_cycle.size() - 1; i++) curr_cycle[i].name = "fin";
         //curr_cycle[11].name = "V";
     }
     else if (!fin_updated){
-        cout << "finals_2" << endl;
+        //cout << "finals_2" << endl;
         int fin_pos = (cad_pos + 2) % form_length;
         
         //!=0 otherwise "fin" * 12 -> there is no general && contextless fin rule, so 12*fin -> infinite..
         if (fin_pos!=0) for (int i=fin_pos; i<curr_cycle.size(); i++) curr_cycle[i].name = "fin";
     }
+    //=================*/
     
     fin_updated = true;
 }
@@ -678,7 +702,7 @@ void G_parser::check_cadence(vector<int>& seq_t){
     
     if (seq_t[3]==cad_pos) {
         
-        cout << "cadenced ture???" << endl;
+        //cout << "cadenced ture???" << endl;
         cadenced = true;
         cad_pos = -1;
     }

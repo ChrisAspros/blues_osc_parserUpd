@@ -485,7 +485,8 @@ rule: cad -> 0.1 iv V //else? does it need prev context too, or does it work lik
 		  -> 0.3 iv7 V
 		  :end_rule
 
-rule: cad_11 -> 1.0 I V :end_rule
+rule: cad_11 -> 1.0 iim7 V :end_rule 
+			//1.0 I V :end_rule
 
 (final rules: every bar after cadence -if not recovering-)=================================================
 

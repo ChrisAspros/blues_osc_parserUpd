@@ -11,7 +11,7 @@ void ofApp::setup(){
     //sleep(5);
     //ofSleepMillis(1000);//seems to make it a bit more stable?
     
-    ofSetFrameRate(45); // 1 frame : 1 tick
+    ofSetFrameRate(60); // 1 frame : 1 tick
     //ofSetFrameRate(70);
     //seq.setup();
     blues.setup();
@@ -77,13 +77,11 @@ void ofApp::update(){
 }
 
 /*
- stop translations after we 've reached
- make empty if previous dec (1, 5, 7, 9, 11)
  make last chord (if v7 and previous == "fin" be also "fin"
+ connect with prediction engine
  make vid
- debug engine
  make pp
- discuss
+ rehearse
  */
 
 void ofApp::draw(){
@@ -109,7 +107,7 @@ void ofApp::draw(){
             ofSetColor(0, 255, 0);
             openSans.drawString("ENDING", 215, 110);
         }
-        else {
+        else if (show_recovery) {
             
             ofSetColor(255, 0, 0);
             openSans.drawString("RECOVERING", 215, 110);
@@ -146,6 +144,13 @@ void ofApp::draw(){
         else if (chord_str=="rec") ofSetColor(255, 0, 0);
         else if (chord_str=="fin") ofSetColor(30, 144, 255);
         else ofSetColor(255);
+        
+        //show "fin" instead of v7 at end..
+        if (blues.t[3]!=11 && chord_str == "v7" && i==11){
+        
+            chord_str = "fin";
+            ofSetColor(30, 144, 255);
+        }
         
         for (int j=0; j<i/4; j++) chord_str = "\n\n\n" + chord_str;
         openSans.drawString(chord_str, ((i%4)+1)*135-95, 453);
@@ -185,9 +190,21 @@ void ofApp::draw(){
 
 void ofApp::keyPressed(int key){
 
-    if (key == 'e' || key == 'E') blues.ending = 1; show_p_e_input = 1;
-    if (key == 'r' || key == 'R') blues.ending = 0;
-    if (key == 'g' || key == 'G') blues.goal_reached = 1;
+    if (key == 'e' || key == 'E') {
+        
+        blues.ending = 1;
+        show_p_e_input = 1;
+    }
+    if (key == 'r' || key == 'R') {
+     
+        blues.ending = 0;
+        show_recovery = 1;
+    }
+    if (key == 'g' || key == 'G'){
+     
+        blues.goal_reached = 1;
+        show_p_e_input = 1;
+    }
     if (key == 's' || key == 'S') blues.seq.stop_all_MIDI();
 }
 

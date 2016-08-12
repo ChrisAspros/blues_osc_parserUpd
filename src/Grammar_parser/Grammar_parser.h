@@ -123,7 +123,7 @@ public:
     bool cadenced = false;
     bool goal_reached = false;
     bool cad_updated = false;
-    int cad_pos;
+    int cad_pos = -10;
     bool recovering = !ending;//before or after cad?
     bool fin_updated = false;
     bool stop_seq = false;

@@ -47,7 +47,21 @@ void Blues_structure::update(){
     //seq.update();
     //seq.metronome(t);
     
-    t = seq.timer();
+    /*
+    if (fin_t.size()==0) t = seq.timer();
+    else if (!(fin_t[3]+1==t[3] && fin_t[4]==t[4])) t = seq.timer();// && t[1]==2 && t[2]==3) && t[0]==7
+    */
+    
+    if (fin_t.size()==0) t = seq.timer();
+    else if (!(fin_t[3]==t[3] && fin_t[4]==t[4] && t[1]==2 && t[2]==3 && t[0]==7)) t = seq.timer();
+    
+    //t = seq.timer();
+     
+    if (seq.only_on("beat", t)){
+     
+        //cout << "beat: " << t[2] << endl;
+        //if (fin_t.size()!=0) cout << "fin_t: " << fin_t[3] << " " << fin_t[4] << endl;
+    }
     
     if (seq.only_on("beat", t)) {
      
