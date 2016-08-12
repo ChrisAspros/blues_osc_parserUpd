@@ -45,16 +45,21 @@ void ofApp::update(){
 
     blues.update();
     
-    /*
+    
     //updating OSC on every beat only (no more needed for now..)
     if(blues.seq.only_on("beat", blues.t)){
         
         OSC.update();
         blues.ending = OSC._ending;
         blues.goal_reached = OSC._goal_reached;
+        
+        //allowing to draw input indication
+        if (blues.ending){ show_p_e_input = 1; show_recovery = 1; }
+        if (blues.goal_reached) show_p_e_input = 1;
+        
         //cout << "ending: " << ending << ", g_r: " << goal_reached << endl;
     }
-     */
+    
     
     //if (ofApp_is_stopped) blues.seq.stop_all_MIDI();
     

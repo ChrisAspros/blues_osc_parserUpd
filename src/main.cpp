@@ -13,3 +13,4 @@ int main( ){
 }
 
 //if tonic at prelast no straight g_r!
+//also at bar 7 (6) due to recovery..
