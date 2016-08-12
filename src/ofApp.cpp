@@ -78,6 +78,8 @@ void ofApp::update(){
 
 /*
  make last chord (if v7 and previous == "fin" be also "fin"
+ a bit more of testing (all cases once at last..)
+ backup (HDD, git, upload)
  connect with prediction engine
  make vid
  make pp
@@ -139,18 +141,26 @@ void ofApp::draw(){
      
         chord_str = blues.parser.curr_cycle[i].name;
         
+        bool last_cad_time;
+        
         //coloured special non-terminals
-        if (chord_str=="cad") ofSetColor(0, 255, 0);
+        if (chord_str=="cad"){
+            
+            ofSetColor(0, 255, 0);
+            last_cad_time = 1;
+        }
         else if (chord_str=="rec") ofSetColor(255, 0, 0);
         else if (chord_str=="fin") ofSetColor(30, 144, 255);
         else ofSetColor(255);
         
+        /*
         //show "fin" instead of v7 at end..
-        if (blues.t[3]!=11 && chord_str == "v7" && i==11){
+        if (blues.t[3]!=11 && chord_str == "v7" && i==11){// && last_cad_time && (blues.ending || blues.goal_reached) && par.cad_updated){
         
             chord_str = "fin";
             ofSetColor(30, 144, 255);
         }
+         */
         
         for (int j=0; j<i/4; j++) chord_str = "\n\n\n" + chord_str;
         openSans.drawString(chord_str, ((i%4)+1)*135-95, 453);

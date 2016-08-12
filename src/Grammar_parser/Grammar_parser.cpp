@@ -15,7 +15,7 @@ G_parser::G_parser() : grammar(grammar_path, std::ifstream::in){
     //grammar_path = "/Users/christodoulosaspromallis/Desktop/UCL/PhD Year 2/Development/OF/of_v0.9.1_osx_release/apps/midiWorkspace/blues/parser_project/bin/data/blues_grammar.txt";
     //cout << "CONTRUCTOR" << endl;
     
-    grammar_path = "/Users/christodoulosaspromallis/Desktop/UCL/PhD Year 2/Development/OF/of_v0.9.1_osx_release/apps/midiWorkspace/blues/parser_project/bin/data/blues_grammar.txt";
+    grammar_path = "/Users/christodoulosaspromallis/Desktop/UCL/PhD Year 2/Development/OF/of_v0.9.1_osx_release/apps/midiWorkspace/blues_osc_parserUpd/bin/data/blues_grammar.txt";
     
     //ifstream grammar(grammar_path, ifstream::in);
     grammar.open(grammar_path);

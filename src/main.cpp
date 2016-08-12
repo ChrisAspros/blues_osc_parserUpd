@@ -3,7 +3,7 @@
 
 //========================================================================
 int main( ){
-	ofSetupOpenGL(200,200,OF_WINDOW);			// <-------- setup the GL context
+	ofSetupOpenGL(575,800,OF_WINDOW);			// <-------- setup the GL context
 
 	// this kicks off the running of my app
 	// can be OF_WINDOW or OF_FULLSCREEN
@@ -11,3 +11,5 @@ int main( ){
 	ofRunApp(new ofApp());
     
 }
+
+//if tonic at prelast no straight g_r!

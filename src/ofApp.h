@@ -8,6 +8,7 @@
 #include "Blues_structure.h"//??
 //#include "Sequencer.h"
 #include "Osc_receive.hpp"
+#include "Grammar_parser.h"
 
 class ofApp : public ofBaseApp{
 
@@ -31,6 +32,8 @@ private:
     Blues_structure blues;
     Osc_receive OSC;
     //Sequencer seq;
+    G_parser par;
+    
     
     //bool ending, goal_reached;
     
